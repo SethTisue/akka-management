@@ -45,7 +45,7 @@ import akka.stream.ActorMaterializer
 import akka.util.ManifestInfo
 
 object AkkaManagement extends ExtensionId[AkkaManagement] with ExtensionIdProvider {
-  override def lookup: AkkaManagement.type = AkkaManagement
+  override def lookup(): AkkaManagement.type = AkkaManagement
 
   override def get(system: ActorSystem): AkkaManagement = super.get(system)
 
@@ -273,7 +273,7 @@ final class AkkaManagement(implicit private[akka] val system: ExtendedActorSyste
                 .createInstanceFor[javadsl.ManagementRouteProvider](fqcn, (classOf[ExtendedActorSystem], system) :: Nil)
           } match {
           case Success(p: ExtensionIdProvider) =>
-            system.registerExtension(p.lookup()) match {
+            system.registerExtension(p.lookup) match {
               case provider: ManagementRouteProvider         => provider
               case provider: javadsl.ManagementRouteProvider => new ManagementRouteProviderAdapter(provider)
               case other =>
